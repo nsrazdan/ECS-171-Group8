@@ -8,7 +8,7 @@
 - Nikhil Razdan (914731368)
 - Cameron Yuen 
 - Joshua McGinnis 
-- Keith Choung
+- Keith Choung (914788476)
 - Owen Gao 
 - Phalgun Krishna
 - Prajwal Singh
