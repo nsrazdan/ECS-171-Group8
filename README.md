@@ -6,10 +6,10 @@
 
 # Team Members
 - Nikhil Razdan (914731368)
-- Cameron Yuen 
-- Joshua McGinnis 
+- Cameron Yuen
+- Joshua McGinnis
 - Keith Choung (914788476)
-- Owen Gao 
+- Owen Gao
 - Phalgun Krishna
 - Prajwal Singh
 - Rohail Asad
@@ -17,3 +17,4 @@
 - Theresa Nowack
 - Thu Vo
 - Trevor Carpenter
+- Ted Kahl (917327847)
