@@ -9,13 +9,14 @@ import pandas as pd
 
 # List of simple to collect features
 snippet_features = ["title", "publishedAt", "channelId", "channelTitle", "categoryId"]
+content_features = ["duration", "dimension", "definition"]
 
 # Any characters to exclude, generally these are things that become problematic in CSV files
 unsafe_characters = ["\n", '"']
 country_codes = ["US"]
 
 # source file for trending videos. Used to determine time range.
-trending_fname = "20.06.11.15.22.06_US_videos-augmented.csv"
+trending_fname = "20.09.11.00.54.16_US_videos-withcdata.csv"
 key_path = "allkeys.txt"
 output_dir = "output/"
 
@@ -27,8 +28,10 @@ no_more_keys = -2
 header = (
     ["video_id"]
     + snippet_features
+    + content_features
     + [
-        "trending_date",
+        "is_trending",
+        "time_retrieved",
         "tags",
         "view_count",
         "likes",
@@ -50,7 +53,16 @@ def get_time_range():
 
 
 def advance_time(start_time, end_time):
-    return (end_time, end_time + delta)
+    if datetime.datetime.now() - start_time.replace(tzinfo=None) > datetime.timedelta(
+        days=20
+    ):
+        return (end_time, end_time + (4 * delta))
+    if datetime.datetime.now() - start_time.replace(tzinfo=None) > datetime.timedelta(
+        days=10
+    ):
+        return (end_time, end_time + (2 * delta))
+    else:
+        return (end_time, end_time + delta)
 
 
 def next_key():
@@ -63,7 +75,6 @@ def next_key():
 def setup(api_path):
     with open(api_path) as file:
         allkeys = [x.rstrip() for x in file]
-
     return allkeys
 
 
@@ -79,11 +90,8 @@ def api_request(page_token, country_code, start_time, end_time):
     global api_key
     start = f"{start_time.date()}T{start_time.time()}Z"
     end = f"{end_time.date()}T{end_time.time()}Z"
-    print(start)
-    print(end)
     request_url = f"https://www.googleapis.com/youtube/v3/search?part=id,snippet{page_token}&type=video&publishedAfter={start}&publishedBefore={end}&order=date&regionCode=US&relevanceLanguage=en&maxResults=50&key={api_key}"
     request = requests.get(request_url)
-    print(request.status_code)
     if request.status_code == 429:
         print("Temp-Banned due to excess requests, please wait and continue later")
         sys.exit()
@@ -121,13 +129,15 @@ def get_videos(items):
         features = [
             prepare_feature(snippet.get(feature, "")) for feature in snippet_features
         ]
+        details_features = ["" for feature in content_features]
 
         # The following are special case features which require unique processing, or are not within the snippet dict
         description = snippet.get("description", "")
         thumbnail_link = (
             snippet.get("thumbnails", dict()).get("default", dict()).get("url", "")
         )
-        trending_date = np.NaN
+        is_trending = False
+        time_retrieved = time.strftime("20%y-%m-%dT%H:%M:%SZ")
         tags = get_tags(snippet.get("tags", ["[none]"]))
 
         view_count = np.NaN
@@ -141,10 +151,12 @@ def get_videos(items):
         line = (
             [video_id]
             + features
+            + details_features
             + [
                 prepare_feature(x)
                 for x in [
-                    trending_date,
+                    is_trending,
+                    time_retrieved,
                     tags,
                     view_count,
                     likes,
@@ -167,13 +179,15 @@ def get_pages(country_code, next_page_token="&"):
     end_time = start_time + delta
     # Because the API uses page tokens (which are literally just the same function of numbers everywhere) it is much
     # more inconvenient to iterate over pages, but that is what is done here.
-    while end_time < true_end:
-        while next_page_token is not None:
+    while start_time < true_end:
+        page_count = 0
+        while next_page_token is not None and page_count < 6:
             # A page of data i.e. a list of videos and all needed data
             video_data_page = api_request(
                 next_page_token, country_code, start_time, end_time
             )
             if video_data_page == switching_key:
+                print("Switching key. Total videos:", len(country_data))
                 break
             if video_data_page == no_more_keys:
                 return country_data
@@ -191,7 +205,7 @@ def get_pages(country_code, next_page_token="&"):
             country_data += get_videos(items)
             if len(items) < 50:
                 break
-            print(len(country_data))
+            page_count += 1
         next_page_token = "&"
         start_time, end_time = advance_time(start_time, end_time)
     return country_data
@@ -205,7 +219,9 @@ def write_to_file(country_code, country_data):
         os.makedirs(output_dir)
 
     with open(
-        f"{output_dir}/{time.strftime('%M.%S')}_videos.csv", "w+", encoding="utf-8",
+        f"{output_dir}/{time.strftime('%m.%d-nontrending')}.csv",
+        "w+",
+        encoding="utf-8",
     ) as file:
         for row in country_data:
             file.write(f"{row}\n")
@@ -221,7 +237,7 @@ allkeys = setup(key_path)
 api_key = allkeys.pop(0)
 
 true_start, true_end = get_time_range()
-delta = datetime.timedelta(hours=2)
+delta = datetime.timedelta(hours=4)
 
 get_data()
 
