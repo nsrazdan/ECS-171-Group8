@@ -8,6 +8,9 @@ api_key = ""
 unsafe_characters = ["\n", '"']
 
 
+content_features = ["duration", "dimension", "definition"]
+
+
 def setkey():
     with open(key_path) as file:
         allkeys = [x.rstrip() for x in file]
@@ -30,53 +33,67 @@ def get_tags(tags_list):
 # get missing data for videos found through search
 def add_video_data(dframe):
     allids = dframe.loc[:, "video_id"].to_list()
+    video_id_dict = {}
+    for i in dframe.index:
+        video_id_dict[dframe.loc[i, "video_id"]] = i
 
     start = 0
     end = channel_req_size
     while start != len(allids):
+        print(start)
         id_string = ",".join(allids[start:end])
-        get_video_data = f"https://www.googleapis.com/youtube/v3/videos?part=id,statistics,snippet&id={id_string}&key={api_key}"
+        get_video_data = f"https://www.googleapis.com/youtube/v3/videos?part=id,statistics,contentDetails,snippet&id={id_string}&key={api_key}"
 
         response = requests.get(get_video_data)
         if response.status_code != 200:
             print(response.json())
             return
         videos = response.json()["items"]
-        for i in range(len(videos)):
+        for video in videos:
             # if statistics not found don't bother, as in original script
-            if "statistics" not in videos[i]:
+            if "statistics" not in video:
                 continue
-            statistics = videos[i]["statistics"]
-            snippet = videos[i]["snippet"]
-            vid = videos[i]["id"]
-            modify = dframe.loc[dframe["video_id"] == vid]
+            statistics = video["statistics"]
+            snippet = video["snippet"]
+            details = video["contentDetails"]
 
-            modify["view_count"] = statistics.get("viewCount", 0)
-            modify["categoryId"] = snippet.get("categoryId", np.NaN)
-            modify["tags"] = get_tags(snippet.get("tags", ["[none]"]))
+            vid = video["id"]
+            dframe.at[video_id_dict[vid], "view_count"] = statistics.get("viewCount", 0)
+            dframe.at[video_id_dict[vid], "categoryId"] = snippet.get(
+                "categoryId", np.NaN
+            )
+            dframe.at[video_id_dict[vid], "tags"] = get_tags(
+                snippet.get("tags", ["[none]"])
+            )
+
+            for i in content_features:
+                dframe.at[video_id_dict[vid], i] = prepare_feature(details.get(i, ""))
 
             if "likeCount" in statistics and "dislikeCount" in statistics:
-                modify["likes"] = statistics["likeCount"]
-                modify["dislikes"] = statistics["dislikeCount"]
-                modify["ratings_disabled"] = False
+                dframe.at[video_id_dict[vid], "likes"] = statistics["likeCount"]
+                dframe.at[video_id_dict[vid], "dislikes"] = statistics["dislikeCount"]
+                dframe.at[video_id_dict[vid], "ratings_disabled"] = False
             else:
-                modify["ratings_disabled"] = True
-                modify["likes"] = 0
-                modify["dislikes"] = 0
+                dframe.at[video_id_dict[vid], "ratings_disabled"] = True
+                dframe.at[video_id_dict[vid], "likes"] = 0
+                dframe.at[video_id_dict[vid], "dislikes"] = 0
 
             if "commentCount" in statistics:
-                modify["comment_count"] = statistics["commentCount"]
-                modify["comments_disabled"] = False
+                dframe.at[video_id_dict[vid], "comment_count"] = statistics[
+                    "commentCount"
+                ]
+                dframe.at[video_id_dict[vid], "comments_disabled"] = False
             else:
-                modify["comment_count"] = 0
-                modify["comments_disabled"] = True
-            dframe.loc[dframe["video_id"] == vid] = modify
+                dframe.at[video_id_dict[vid], "comment_count"] = 0
+                dframe.at[video_id_dict[vid], "comments_disabled"] = True
         start = end
         end = min(end + channel_req_size, len(allids))
 
 
 api_key = setkey()
-nontrending = "05.18_videos.csv"
+nontrending = "11.09-nontrending.csv"
 df2 = pd.read_csv(f"./output/{nontrending}")
 add_video_data(df2)
-df2.to_csv(f"{nontrending}-withvdata.csv")
+newfname = nontrending[0:-4] + "-withcdata.csv"
+
+df2.to_csv(f"./output/{newfname}", columns=df2.columns.to_list()[1:])

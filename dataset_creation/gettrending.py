@@ -5,6 +5,9 @@ import requests, sys, time, os, argparse
 # List of simple to collect features
 snippet_features = ["title", "publishedAt", "channelId", "channelTitle", "categoryId"]
 
+# from contentDetails
+content_features = ["duration", "dimension", "definition"]
+
 # Any characters to exclude, generally these are things that become problematic in CSV files
 unsafe_characters = ["\n", '"']
 
@@ -12,8 +15,10 @@ unsafe_characters = ["\n", '"']
 header = (
     ["video_id"]
     + snippet_features
+    + content_features
     + [
-        "trending_date",
+        "is_trending",
+        "time_retrieved",
         "tags",
         "view_count",
         "likes",
@@ -46,7 +51,7 @@ def prepare_feature(feature):
 
 def api_request(page_token, country_code):
     # Builds the URL and requests the JSON from it
-    request_url = f"https://www.googleapis.com/youtube/v3/videos?part=id,statistics,snippet{page_token}chart=mostPopular&regionCode={country_code}&maxResults=50&key={api_key}"
+    request_url = f"https://www.googleapis.com/youtube/v3/videos?part=id,statistics,contentDetails,snippet{page_token}chart=mostPopular&regionCode={country_code}&maxResults=50&key={api_key}"
     request = requests.get(request_url)
     if request.status_code == 429:
         print("Temp-Banned due to excess requests, please wait and continue later")
@@ -76,18 +81,22 @@ def get_videos(items):
         # Snippet and statistics are sub-dicts of video, containing the most useful info
         snippet = video["snippet"]
         statistics = video["statistics"]
+        details = video["contentDetails"]
 
         # This list contains all of the features in snippet that are 1 deep and require no special processing
         features = [
             prepare_feature(snippet.get(feature, "")) for feature in snippet_features
         ]
-
+        details_features = [
+            prepare_feature(details.get(feature, "")) for feature in content_features
+        ]
         # The following are special case features which require unique processing, or are not within the snippet dict
         description = snippet.get("description", "")
         thumbnail_link = (
             snippet.get("thumbnails", dict()).get("default", dict()).get("url", "")
         )
-        trending_date = time.strftime("%y.%d.%m")
+        is_trending = True
+        time_retrieved = time.strftime("20%y-%m-%dT%H:%M:%SZ")
         tags = get_tags(snippet.get("tags", ["[none]"]))
         view_count = statistics.get("viewCount", 0)
 
@@ -111,10 +120,12 @@ def get_videos(items):
         line = (
             [video_id]
             + features
+            + details_features
             + [
                 prepare_feature(x)
                 for x in [
-                    trending_date,
+                    is_trending,
+                    time_retrieved,
                     tags,
                     view_count,
                     likes,

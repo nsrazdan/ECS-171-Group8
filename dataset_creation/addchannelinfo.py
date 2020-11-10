@@ -22,16 +22,19 @@ def prepare_feature(feature):
     return f'"{feature}"'
 
 
+def add_columns(dframe, columns):
+    for col in columns:
+        if col not in dframe.columns:
+            dframe.insert(len(dframe.columns), col, np.NaN)
+
+
 # get missing data for videos found through search
 def add_channel_data(dframe):
     stats_atts = ["viewCount", "subscriberCount", "hiddenSubscriberCount", "videoCount"]
     snippet_atts = ["title", "description", "publishedAt", "country"]
 
     columns = ["Channel_" + att for att in stats_atts + snippet_atts]
-
-    for col in columns:
-        if col not in dframe.columns:
-            dframe.insert(len(dframe.columns), col, np.NaN)
+    add_columns(dframe, columns)
 
     allids = set(dframe.loc[:, "channelId"].to_list())
     allids = list(allids)
@@ -48,20 +51,20 @@ def add_channel_data(dframe):
         for i in range(len(channels)):
             cid = channels[i]["id"]
             for j in stats_atts:
-                if j in channels[i]["statistics"]:
-                    dframe.loc[dframe["channelId"] == cid, "Channel_" + j] = channels[
-                        i
-                    ]["statistics"][j]
+                dframe.loc[dframe["channelId"] == cid, "Channel_" + j] = channels[i][
+                    "statistics"
+                ].get(j, np.NaN)
             for j in snippet_atts:
-                if j in channels[i]["snippet"]:
-                    feature = prepare_feature(channels[i]["snippet"][j])
-                    dframe.loc[dframe["channelId"] == cid, "Channel_" + j] = feature
+                feature = prepare_feature(channels[i]["snippet"].get(j, ""))
+                dframe.loc[dframe["channelId"] == cid, "Channel_" + j] = feature
+
         start = end
         end = min(end + channel_req_size, len(allids))
 
 
 api_key = setkey()
-nontrending = "aug2.csv"
-df2 = pd.read_csv(f"./output/{nontrending}")
+data = "11.09-nontrending-withvdata.csv"
+df2 = pd.read_csv(f"./output/{data}")
 add_channel_data(df2)
-df2.to_csv(f"{nontrending}-withcdata.csv")
+newfname = data[0:-4] + "-withcdata.csv"
+df2.to_csv(f"./output/{newfname}", columns=df2.columns.to_list()[1:])
