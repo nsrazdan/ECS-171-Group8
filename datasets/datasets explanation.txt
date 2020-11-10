@@ -1,0 +1,9 @@
+"11.09 trending" and "11.09 nontrending" are together our primary dataset. Based on our discussion 
+today, we'll be updating these each day with the most recent viewcount, likes, dislikes and comment 
+count, along with a timestamp of the most recent update. For now I decided to just keep the file
+names the same for the updated files and remove the old files, but if that doesn't work we can talk
+about how to name them. 
+
+In order to determine whether any of the nontrending videos start to trend, we also have to get the 
+current set of trending videos each day. "11.09.06 trending" is the first of these. The next should
+be "11.10 trending", then "11.11 trending" and so on. 
