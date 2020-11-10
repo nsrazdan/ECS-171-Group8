@@ -67,4 +67,4 @@ data = "11.09-nontrending-withvdata.csv"
 df2 = pd.read_csv(f"./output/{data}")
 add_channel_data(df2)
 newfname = data[0:-4] + "-withcdata.csv"
-df2.to_csv(f"./output/{newfname}")
+df2.to_csv(f"./output/{newfname}", columns=df2.columns.to_list()[1:])

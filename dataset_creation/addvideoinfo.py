@@ -95,4 +95,5 @@ nontrending = "11.09-nontrending.csv"
 df2 = pd.read_csv(f"./output/{nontrending}")
 add_video_data(df2)
 newfname = nontrending[0:-4] + "-withcdata.csv"
-df2.to_csv(f"./output/{newfname}")
+
+df2.to_csv(f"./output/{newfname}", columns=df2.columns.to_list()[1:])

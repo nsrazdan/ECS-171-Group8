@@ -7,7 +7,7 @@ with open("allkeys.txt") as file:
         response = requests.get(
             f"https://www.googleapis.com/youtube/v3/videos?part=id&chart=mostPopular&regionCode=US&key={key}"
         )
-        print(response.status_code)
+        print(key, response.status_code)
         if response.status_code != 200:
-            print(response.json())
+            print(key, response.json())
 
