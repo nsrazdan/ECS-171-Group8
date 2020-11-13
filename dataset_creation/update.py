@@ -4,7 +4,7 @@ import time
 import pandas as pd
 import numpy as np
 
-api_key = ""
+api_key = "AIzaSyB1gOa2afwLgO6S7LT8Jfby56D9vA-W_kg"
 req_size = 49
 
 # augment dframe with new columns
@@ -38,7 +38,8 @@ async def make_request(url):
             return {"response": json, "status": response.status, "url": url}
 
 
-async def update(dframe):
+async def update(dframe, name):
+    add_columns(dframe, len(dframe.columns), columns)
     # get list of video ids and dictionary of video id: index
     allids = dframe.loc[:, "video_id"].to_list()
     video_id_dict = {}
@@ -79,7 +80,7 @@ async def update(dframe):
             with open("failed.txt", "w+", encoding="utf-8") as file:
                 for row in failed_urls:
                     file.write(f"{row}\n")
-    dframe.to_csv(f"{data[0:-4]}-updated.csv", columns=dframe.columns.to_list()[1:])
+    dframe.to_csv(name, columns=dframe.columns.to_list()[1:])
 
 
 today = time.strftime("%m_%d_%H")
@@ -88,7 +89,11 @@ columns = [
     for col in ["view_count", "likes", "dislikes", "comment_count"]
 ]
 
-data = "11.09 trending.csv"
-dfx = pd.read_csv(f"./output/{data}")
-add_columns(dfx, len(dfx.columns), columns)
-asyncio.run(update(dfx))
+trending = "11.09 trending.csv"
+nontrending = "11.09 nontrending.csv"
+dft = pd.read_csv(f"./datasets/{trending}")
+dfn = pd.read_csv(f"./datasets/{nontrending}")
+asyncio.run(update(dft, trending))
+asyncio.run(update(dfn, nontrending))
+
+exec(open("./dataset_creation/gettrending.py").read())

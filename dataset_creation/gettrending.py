@@ -175,9 +175,7 @@ def write_to_file(country_code, country_data):
         os.makedirs(output_dir)
 
     with open(
-        f"{output_dir}/{time.strftime('%y.%d.%m.%H.%M.%S')}_{country_code}_videos.csv",
-        "w+",
-        encoding="utf-8",
+        f"{time.strftime('%m.%d trending')}.csv", "w+", encoding="utf-8",
     ) as file:
         for row in country_data:
             file.write(f"{row}\n")
