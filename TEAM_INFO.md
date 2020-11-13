@@ -20,6 +20,6 @@
     - Phalgun Krishna
 - **Docs Group**
   - Nikhil Razdan
-- **Unassigned**
   - Thu Vo
+- **Unassigned**
   - Owen Gao
