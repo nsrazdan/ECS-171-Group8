@@ -2,6 +2,7 @@ channel_req_size = 49
 import requests
 import pandas as pd
 import numpy as np
+import time
 
 key_path = "allkeys.txt"
 api_key = ""
@@ -63,8 +64,8 @@ def add_channel_data(dframe):
 
 
 api_key = setkey()
-data = "11.09-nontrending-withvdata.csv"
-df2 = pd.read_csv(f"./output/{data}")
+data = time.strftime("%m.%d trending.csv")
+df2 = pd.read_csv(data)
 add_channel_data(df2)
-newfname = data[0:-4] + "-withcdata.csv"
-df2.to_csv(f"./output/{newfname}", columns=df2.columns.to_list()[1:])
+
+df2.to_csv(data, columns=df2.columns.to_list()[1:])
