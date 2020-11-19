@@ -7,3 +7,7 @@ about how to name them.
 In order to determine whether any of the nontrending videos start to trend, we also have to get the 
 current set of trending videos each day. "11.09.06 trending" is the first of these. The next should
 be "11.10 trending", then "11.11 trending" and so on. 
+
+"11.18 recent" is a database of videos gathered over the last 24 hours, which should be better for
+tracking changes in subscriber count and other attributes. "11.16 recent" was the first attempt
+at this which got messed up. 
