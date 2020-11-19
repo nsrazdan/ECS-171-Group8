@@ -3,6 +3,8 @@ import requests
 import pandas as pd
 import numpy as np
 
+# Deprecated. Future data sets should have these attributes from the start
+
 key_path = "allkeys.txt"
 api_key = ""
 unsafe_characters = ["\n", '"']

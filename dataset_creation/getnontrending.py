@@ -7,6 +7,8 @@ import pandas as pd
 # Inspired by Mitchell J's trending video script (https://github.com/mitchelljy/Trending-YouTube-Scraper)
 # modified to gather nontrending videos from the same time interval
 
+# Deprecated. If we need this again instead modify getrecent.py
+
 # List of simple to collect features
 snippet_features = ["title", "publishedAt", "channelId", "channelTitle", "categoryId"]
 content_features = ["duration", "dimension", "definition"]
