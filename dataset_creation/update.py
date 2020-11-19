@@ -114,6 +114,9 @@ async def update(dframe, name, withchannels=False):
             ] = statistics.get("commentCount", 0)
             dframe.at[video_id_dict[vid], f"{today}_update_timestamp"] = now
         # if any requests failed, save those urls so they can be repeated
+    for col in dframe.columns:
+        if "Unnamed" in str(col):
+            dframe.drop(col, axis=1, inplace=True)
     dframe.to_csv(name, columns=dframe.columns.to_list())
 
 
@@ -130,11 +133,11 @@ trending = "11.09 trending.csv"
 nontrending = "11.09 nontrending.csv"
 dft = pd.read_csv(f"./datasets/{trending}")
 dfn = pd.read_csv(f"./datasets/{nontrending}")
-# asyncio.run(update(dft, trending))
-# asyncio.run(update(dfn, nontrending))
+asyncio.run(update(dft, trending))
+asyncio.run(update(dfn, nontrending))
 
-recent = "11.16 recent.csv"
+recent = "11.18 recent.csv"
 dfr = pd.read_csv(f"./datasets/{recent}")
 asyncio.run(update(dfr, recent, withchannels=True))
 
-# exec(open("./dataset_creation/gettrending.py").read())
+exec(open("./dataset_creation/gettrending.py").read())
