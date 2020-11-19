@@ -1,4 +1,5 @@
-import streamlit as st 
+import streamlit as st
+from getonevideo import get_video
 
 st.sidebar.header("Youtube Trending Videos");
 st.sidebar.subheader("ECS 171 | Group 8 | Fall 2020");
@@ -36,5 +37,41 @@ if modelType == "Build Custom Model":
         momentum = st.number_input("Momentum: ");
 
 
+# Build/Train Model If User Selected "Build Custom Model"
+# --------------------------------------------------------------------------
+# Load in dataset, train model
+# Maybe add in a loading bar? (Set it to increase a certain amount in between iterations?)
+
+
+# Load Model
+# --------------------------------------------------------------------------
+# if modelType == "Accuracy"...
+# elif modelType == "Precision"...
+
+
+
+
 # Display Info About The Model
 # --------------------------------------------------------------------------
+# Pass in the test data and retrieve the model metrics (Accuracy, Loss...)
+# Confusion Matrix?
+# Display Weights?
+
+
+
+
+# Obtain Video Data From URL
+# --------------------------------------------------------------------------
+st.header("Video Trendability Prediction");
+videoURL = st.text_input("Enter Video URL");
+if videoURL != "":
+    videoIDIndex = videoURL.find("=");
+    videoID = videoURL[videoIDIndex+1 : ];
+    videoData = get_video(videoID);
+    st.table(videoData); # for debugging
+
+
+
+# Run Video Data Through Model
+# --------------------------------------------------------------------------
+
