@@ -129,15 +129,16 @@ columns = [
 
 channel_columns = [f"Channel_{col}_update_{today}" for col in stats_atts]
 
-trending = "11.09 trending.csv"
+# trending = "11.09 trending.csv"
 nontrending = "11.09 nontrending.csv"
-dft = pd.read_csv(f"./datasets/{trending}")
+# dft = pd.read_csv(f"./datasets/{trending}")
 dfn = pd.read_csv(f"./datasets/{nontrending}")
-asyncio.run(update(dft, trending))
-asyncio.run(update(dfn, nontrending))
+# asyncio.run(update(dft, trending))
+# asyncio.run(update(dfn, nontrending))
 
 recent = "11.18 recent.csv"
 dfr = pd.read_csv(f"./datasets/{recent}")
-asyncio.run(update(dfr, recent, withchannels=True))
+# asyncio.run(update(dfr, recent, withchannels=True))
 
 exec(open("./dataset_creation/gettrending.py").read())
+exec(open("./dataset_creation/addchannelinfo.py").read())

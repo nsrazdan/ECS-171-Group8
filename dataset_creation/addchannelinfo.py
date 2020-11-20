@@ -20,7 +20,7 @@ def prepare_feature(feature):
     # Removes any character from the unsafe characters list and surrounds the whole item in quotes
     for ch in unsafe_characters:
         feature = str(feature).replace(ch, "")
-    return f'"{feature}"'
+    return feature
 
 
 def add_columns(dframe, columns):
@@ -67,5 +67,7 @@ api_key = setkey()
 data = time.strftime("%m.%d trending.csv")
 df2 = pd.read_csv(data)
 add_channel_data(df2)
-
-df2.to_csv(data, columns=df2.columns.to_list()[1:])
+for col in df2.columns:
+    if "Unnamed" in str(col):
+        df2.drop(col, axis=1, inplace=True)
+df2.to_csv(f"./datasets/{data}")
