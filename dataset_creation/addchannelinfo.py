@@ -1,5 +1,6 @@
 channel_req_size = 49
 import requests
+import os
 import pandas as pd
 import numpy as np
 import time
@@ -70,4 +71,5 @@ add_channel_data(df2)
 for col in df2.columns:
     if "Unnamed" in str(col):
         df2.drop(col, axis=1, inplace=True)
-df2.to_csv(f"./datasets/{data}")
+os.remove(data)
+df2.to_csv(data)
