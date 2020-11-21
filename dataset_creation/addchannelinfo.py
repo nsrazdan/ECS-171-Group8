@@ -2,6 +2,7 @@ channel_req_size = 49
 import requests
 import pandas as pd
 import numpy as np
+import time
 
 key_path = "allkeys.txt"
 api_key = ""
@@ -19,7 +20,7 @@ def prepare_feature(feature):
     # Removes any character from the unsafe characters list and surrounds the whole item in quotes
     for ch in unsafe_characters:
         feature = str(feature).replace(ch, "")
-    return f'"{feature}"'
+    return feature
 
 
 def add_columns(dframe, columns):
@@ -63,8 +64,10 @@ def add_channel_data(dframe):
 
 
 api_key = setkey()
-data = "11.09-nontrending-withvdata.csv"
-df2 = pd.read_csv(f"./output/{data}")
+data = time.strftime("%m.%d trending.csv")
+df2 = pd.read_csv(data)
 add_channel_data(df2)
-newfname = data[0:-4] + "-withcdata.csv"
-df2.to_csv(f"./output/{newfname}", columns=df2.columns.to_list()[1:])
+for col in df2.columns:
+    if "Unnamed" in str(col):
+        df2.drop(col, axis=1, inplace=True)
+df2.to_csv(f"./datasets/{data}")
