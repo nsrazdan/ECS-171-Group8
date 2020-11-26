@@ -138,7 +138,7 @@ dfn = pd.read_csv(f"./datasets/{nontrending}")
 
 recent = "11.18 recent.csv"
 dfr = pd.read_csv(f"./datasets/{recent}")
-# asyncio.run(update(dfr, recent, withchannels=True))
+asyncio.run(update(dfr, recent, withchannels=True))
 
 exec(open("./dataset_creation/gettrending.py").read())
 exec(open("./dataset_creation/addchannelinfo.py").read())
