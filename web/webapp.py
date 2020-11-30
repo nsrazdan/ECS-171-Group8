@@ -15,14 +15,14 @@ st.sidebar.text("\n\n\n*Insert Description/Introduction Here*");
 st.header("Choose Model (Custom vs. Our Best Models)")
 
 modelType = st.radio("What type of model would you like to use?", ("Use Pre-Built Models", "Build Custom Model"));
+modelTrait = st.radio("Would you like to use Logistic Regression or a Neural Network?", ("Logistic Regression", "Neural Network"));
 
 # Make the selection box that contains what pre-built models we have appear
 if modelType == "Use Pre-Built Models":
-    modelType = st.selectbox("Please Select Which Pre-Built Model You Would Like To Use", ("Accuracy", "Precision", "Add more here"));
+	modelType = st.selectbox("Please Select Which Pre-Built Model You Would Like To Use", ("Accuracy", "Precision", "Add more here"));
 
 if modelType == "Build Custom Model":
-    modelType = st.radio("What Sort of Model do you Want to Build?", ("Logistic Regression", "Neural Network"))
-    if modelType == "Logistic Regression":
+    if modelTrait == "Logistic Regression":
         learningRate = st.number_input("Learning Rate: ");
         actFunction = st.number_input("Activation Function: ");
         regularization = st.number_input("Regularization: ");
@@ -74,4 +74,14 @@ if videoURL != "":
 
 # Run Video Data Through Model
 # --------------------------------------------------------------------------
+result = None
+calculating = False # until the model is activated
 
+
+# Output the results from the model
+# --------------------------------------------------------------------------
+calculating = True # when the model is calculating
+if result != None:
+	st.subheader("Calculating...")
+else:
+	st.success("Your video has a {result} chance of being trendy on Youtube!")
