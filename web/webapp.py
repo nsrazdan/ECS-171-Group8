@@ -21,6 +21,8 @@ from sklearn import metrics
 import matplotlib.pyplot as plt
 from matplotlib import pyplot
 
+from sklearn.metrics import confusion_matrix
+
 # Fetches and Prepares the Data
 def prepareData():
     # Import Data Into Pandas Dataframe
@@ -98,7 +100,7 @@ def buildCustomNeuralNetworkModel(is_model_built):
     optimizer = st.selectbox("Please Select Which Optimizer You Would Like To Use", ("adam", "adadelta", "adagrad", "adamax", "nadam", "ftrl", "RMSprop", "SGD"))
     loss = st.selectbox("Please Select Which Loss Metric You Would Like To Use", ("mean_squared_error", "mean_absolute_error", "mean_absolute_percentage_error", "mean_squared_logarithmic_error", "cosine_similarity", "logcosh"))
 
-    metrics = [tf.keras.metrics.Accuracy(),tf.keras.metrics.Recall(),tf.keras.metrics.Precision()]
+    metrics = ["accuracy",tf.keras.metrics.Recall(),tf.keras.metrics.Precision()]
     metrics_names = ["accuracy","recall","precision"]
 
     # NOTE: Add Customizable Later?
@@ -111,7 +113,7 @@ def buildCustomNeuralNetworkModel(is_model_built):
     test_X = dataList[2]
     test_Y = dataList[3]
 
-    if st.button("Build Model"): # User presses button when they are done inputting data
+    if st.button("Build & Evaluate Model"): # User presses button when they are done inputting data
         ANN_model = keras.Sequential()
         # add hidden layers
         for i in range(num_hidden_layers):
@@ -143,8 +145,11 @@ def buildCustomNeuralNetworkModel(is_model_built):
 
         # Once model is built, we must train it
         ANN_model.fit(train_X, train_Y, validation_data=(test_X, test_Y), epochs=epochs, batch_size=batch_size, callbacks= [UpdateProgressBar()])
-        st.success("Finished Training Model")      
-        return ANN_model
+        st.success("Finished Training Model")
+        if is_model_built == True:
+            return ANN_model
+        if is_model_built == False:
+            return
 
 
 # Display Statistics For Logistic Regression Model
@@ -196,9 +201,9 @@ def displayLogisticStats(LR_model):
     return
 
 
-# TODO: Implement Displaying Model Statistics
+# TODO: UPDATE BUILT IN MODEL FILE
 # Display Statistics for Neural Network Model
-def displayNeuralNetworkStats(ANN_model):
+def displayNeuralNetworkStats(ANN_model, customBool):
     # Import Data Needed For Model Evaluation
     dataList = prepareData() # Returns: [train_X, train_Y, test_X, test_Y]
     train_X = dataList[0]
@@ -206,7 +211,31 @@ def displayNeuralNetworkStats(ANN_model):
     test_X = dataList[2]
     test_Y = dataList[3]
 
-    st.success("Impelement This")
+    train_X = np.asarray(train_X).astype('float32')
+    train_Y = np.asarray(train_Y).astype('float32')
+    test_X = np.asarray(test_X).astype('float32')
+    test_Y = np.asarray(test_Y).astype('float32')
+
+
+    if customBool == True:
+        loss = 'mean_squared_error'
+        metrics = ["accuracy", tf.keras.metrics.Recall(),tf.keras.metrics.Precision()]
+        optimizer = 'adam'
+        ANN_model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+
+    pred_Y = ANN_model.predict_classes(test_X)
+    metrics = ANN_model.evaluate(test_X, test_Y)
+    accuracy = metrics[1] # [loss, accuracy, ...]
+
+    disp_con_mat = plt.figure()
+    con_mat = confusion_matrix(test_Y, pred_Y)
+    sns.heatmap(con_mat/np.sum(con_mat), annot = True, fmt=".2%", linewidths=1, linecolor = "black", square = True, cmap = 'BuPu')
+    plt.ylabel('True Label')
+    plt.xlabel('Predicted Label')
+    con_mat_title = 'Accuracy Score: {:.2%}'.format(accuracy)
+    plt.title(con_mat_title, size = 15)
+
+    st.pyplot(disp_con_mat)
 
     return
 
@@ -220,7 +249,7 @@ st.sidebar.text("Nikhil Razdan\tCameron Yuen\nJoshua McGinnis\tKeith Chuong\nOwe
 
 st.sidebar.text("");
 st.sidebar.text("");
-st.sidebar.text("\n\n\n*Insert Description/Introduction Here*");
+# st.sidebar.text("\n\n\n*Insert Description/Introduction Here*");
 
 # ===================================================================================
 
@@ -246,15 +275,14 @@ if modelType == "Use Pre-Built Model":
 
     elif prebuilt_model_selection == "Neural Network" and st.button("Load & Evaluate Model"):
         ANN_model = loadNeuralNetworkModel()
-        displayNeuralNetworkStats(ANN_model)
+        displayNeuralNetworkStats(ANN_model, True) # 2nd argument says model is prebuilt
         
         
         
 
 # ----------------Building Custom Neural Network Model--------------------
 if modelType == "Build Custom Neural Network Model":
-    is_model_built = False # Ensures you can only display stats after building model
-    ANN_model = buildCustomNeuralNetworkModel(is_model_built)
+    ANN_model = buildCustomNeuralNetworkModel(True)
 
-    if st.button("Evaluate Neural Network"):
-        displayNeuralNetworkStats(ANN_model)
+    if ANN_model is not None: # Wait until model is built before evaluating it
+        displayNeuralNetworkStats(ANN_model, False) # 2nd argument says the model is not pre-built
