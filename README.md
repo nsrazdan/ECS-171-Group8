@@ -18,3 +18,24 @@
 - Thu Vo
 - Trevor Carpenter
 - Ted Kahl (917327847)
+
+# Web App Usage
+This web app is powered by Streamlit, an all-in-one powerful Python based framework that handles the UI development and also the back end work of machine learning models.  
+
+First, clone this repository onto your local machine using the commands:  
+`git clone <repo url>`
+
+
+Install these dependencies before running the project:  
+`pandas  
+matplotlib  
+numpy  
+sklearn  
+nltk  
+dateutil  
+tensorflow  
+streamlit  
+`
+
+After installing these dependecies, navigate to the `web/` directory and run this command:  
+`streamlit run webapp.py`
