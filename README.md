@@ -18,3 +18,19 @@
 - Thu Vo
 - Trevor Carpenter
 - Ted Kahl (917327847)
+
+# Web App Usage
+The web app was built around Streamlit which is a Python based framework. Install these dependencies before running the project:
+`
+pandas
+matplotlib
+numpy
+sklearn
+nltk
+dateutil
+tensorflow
+streamlit
+`
+
+After installing these dependecies, navigate to the `web/` directory and run this command:
+`streamlit run webapp.py`
