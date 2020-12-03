@@ -1,6 +1,7 @@
 import requests, sys, time, os, argparse
 
-# Credit to Mitchell J (https://github.com/mitchelljy/Trending-YouTube-Scraper) for creating this script
+# Credit to Mitchell J (https://github.com/mitchelljy/Trending-YouTube-Scraper) for creating most of this script
+# This version adds some additional attributes and includes a few other minor
 
 # List of simple to collect features
 snippet_features = ["title", "publishedAt", "channelId", "channelTitle", "categoryId"]

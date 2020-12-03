@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 import time
 
+# Much of the code here comes from Mitchell J's trending video script
+# (https://github.com/mitchelljy/Trending-YouTube-Scraper)
+
 
 def prepare_feature(feature):
     # Removes any character from the unsafe characters list and surrounds the whole item in quotes
