@@ -35,27 +35,6 @@ The project aims to use supervised learning techniques to build a Machine Learni
 - \textbf{Members:} Nikhil Razdan
 
 \section*{Literature Review (1 page)}
-\subsection*{Overview}
-The project aims to use supervised learning techniques to build a Machine Learning model that predicts the "virality", which is defined as a view count, of a video. Predicting whether the video is trending or non-trending is a binary classification problem; thus, we implemented Neural Network and Logistic Regression model, compared the performance of the two models, and chose the best model in order to classify the video given some data about it. Besides Machine Learning model, we developed a web application to show how the model works. 
-
-\subsection*{Group Members}
-\subsubsection*{Data Gathering Sub-Group:}
-- \textbf{Contribution:} Wrote and manage script to get data from Youtube Data API \\
-- \textbf{Members:} Ted Kahl, Rohail Asad
-\subsubsection*{Data Processing Sub-Group:}
-- \textbf{Contribution:} Processed data from API into effective dataset \\
-- \textbf{Members:} Phalgun Krishna, Prajwal Singh, Seth Damany
-\subsubsection*{Machine Learning Sub-Group:}
-- \textbf{Contribution:} Created and optimized ML models \\
-- \textbf{Members:} Cameron Yuen, Owen Gao, Theresa Nowack, Trevor Carpenter
-\subsubsection*{Documentation and Web App Sub-Group:}
-- \textbf{Contribution:} Created web app and managed documentation \\
-- \textbf{Members:} Josh McGinnis, Keith Choung, Nikhil Razdan, Thu Vo
-\subsubsection*{Group Leader:}
-- \textbf{Contribution:} Organized milestones and facilitated communication \\
-- \textbf{Members:} Nikhil Razdan
-
-\section*{Literature Review (1 page)}
 \subsection*{Primary Source}
 
 \par In looking at other sources with similar topics, we found that various studies defined popularity differently. Our group used YouTube’s trending feature as our popularity metric. Another similar study from Stanford used videos’ view counts instead. This study, titled \textit{YouTube Videos Prediction: Will this video be popular?}, analyzes the topic of predicting a video’s success from the perspective of a YouTube content creator. Instead of a simple binary classification “trending?” target variable like our group utilized, the researchers Li, Kent, and Zhang from Stanford divided the classification into 4 disjoint categories: non-popular, overwhelming praises, overwhelming bad views, and neutral videos. They used multi-class classification to analyse and quantify the success of a video in seeing whether it was reacted to positively or negatively. The researchers used similar attributes as our group, such as view count and duration. However, they also included an important attribute that fits in line with their ‘YouTuber’ point of view: time gap. This takes into account the possibility that frequent and regular uploads are favored by YouTube’s recommendation/trending selection process as opposed to a sporadic upload schedule. By using the YouTube dataset from Kaggle that inspired our project’s dataset, this particular research paper bears many similarities with our own.
