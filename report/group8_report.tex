@@ -5,6 +5,13 @@
 \usepackage{gensymb}
 \usepackage{hyperref}
 
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+
 \title{[ECS 175] Report}
 \date{12/07/2020}
 \author{Group 8}
@@ -14,8 +21,8 @@
 \maketitle
 
 \section*{Introduction (1 page)}
-\subsection*{Overview}
-The project aims to use supervised learning techniques to build a Machine Learning model that predicts the "virality", which is defined as a view count, of a video. Predicting whether the video is trending or non-trending is a binary classification problem; thus, we implemented Neural Network and Logistic Regression model, compared the performance of the two models, and chose the best model in order to classify the video given some data about it. Besides Machine Learning model, we developed a web application to show how the model works. 
+\subsection*{Problem Statement}
+Our project aims to predict whether a given YouTube video is classified as "trending" or "non-trending" by Google. We did this by creating our own dataset through Google's YouTube Data v3 API which contained present and historical information about a video. This problem is a binary classification problem as we are predicting one of two classes. Thus, we implemented prediction with both Neural Network and Logistic Regression models, and compared the two to find the best model overall. In addition, we expanded the problem scope from simple binary classification to multiclass classification by utilizing clustering. Although this does not directly solve our original problem, it gave us avenue to predict a YouTube video's success.
 
 \subsection*{Group Members}
 \subsubsection*{Data Gathering Sub-Group:}
@@ -33,6 +40,11 @@ The project aims to use supervised learning techniques to build a Machine Learni
 \subsubsection*{Group Leader:}
 - \textbf{Contribution:} Organized milestones and facilitated communication \\
 - \textbf{Members:} Nikhil Razdan
+
+\subsection*{Project Links}
+- \textbf{GitHub:} \url{www.github.com/nsrazdan/ECS-171-Group8} \\
+- \textbf{YouTube Data v3 API:} \url{developers.google.com/youtube/v3/} \\
+- \textbf{Original Kaggle Dataset:} \url{www.kaggle.com/datasnaek/youtube-new} \\
 
 \section*{Literature Review (1 page)}
 \subsection*{Primary Source}
