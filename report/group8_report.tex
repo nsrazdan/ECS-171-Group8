@@ -25,7 +25,7 @@
 
 \section*{Introduction (1 page)}
 \subsection*{Problem Statement}
-\quad Our project aims to predict whether a given YouTube video is classified as "trending" or "non-trending" by Google. We did this by creating our own dataset through Google's YouTube Data v3 API which contained present and historical information about a video. This problem is a binary classification problem as we are predicting one of two classes. Thus, we implemented prediction with both Neural Network and Logistic Regression models, and compared the two to find the best model overall. In addition, we expanded the problem scope from simple binary classification to multiclass classification by utilizing clustering. Although this does not directly solve our original problem, it gave us avenue to predict a YouTube video's success.
+\quad Our project aims to predict whether a given YouTube video is classified as "trending" or "non-trending" by Google. We did this by creating our own dataset through Google's YouTube Data v3 API which contained present and historical information about a video. This problem is a binary classification problem as we are predicting one of two classes. Thus, we implemented prediction with both Neural Network and Logistic Regression models, and compared the two to find the best model overall. In addition, we expanded the problem scope from simple binary classification to multiclass classification by utilizing clustering. Although this does not directly solve our original problem, it gave us another avenue to predict a YouTube video's success.
 
 \subsection*{Group Members}
 \subsubsection*{Data Gathering Sub-Group:}
@@ -72,17 +72,26 @@ Li, Kent, and Zhang found that extreme gradient boosting with attributes \{time 
 
 \href{https://www.researchgate.net/publication/266262149_Trending_Videos_Measurement_and_Analysis}{https://www.researchgate.net/publication/266262149\_Trending\_Videos\_Measurement\_and\_Analysis} 
 
-\subsection*{References}
-\begin{enumerate}
-  \item Li, Yuping, et al. Stanford, 2019, \textit{YouTube Videos Prediction: Will This Video Be Popular?} 
-  \item Srinivasan, Aravind. “Youtube Views Predictor.” Medium, Towards Data Science, 17 Dec. 2017, \href{https://towardsdatascience.com/youtube-views-predictor-9ec573090acb}{https://towardsdatascience.com/youtube-views-predictor-9ec573090acb}
-  \item Dvir, Amit, et al. Arial University \& Lancaster University, 2019, \textit{Clustering the Unknown - The Youtube Case}
-  \item Barjasteh, Iman, and Ying Liu. Michigan State University, \textit{Trending Videos: Measurement and Analysis}
-\end{enumerate}
-
-
 \section*{Dataset Description (0.5 pages)}
-\pagebreak
+
+\noindent
+\quad Our dataset consists of data corresponding to two types of Youtube videos: “trending” and “non-trending”. The trending videos are the 200 videos designated as “trending” within the United States by Youtube at the time of the query at 12:54 AM on November 9th. The “non-trending” videos are 23,035 arbitrary videos returned by time-bounded search queries within the same time interval as the trending videos. The columns of the dataset can be divided into two categories: “initial columns” and “update columns”. Initial columns were set when the videos were first retrieved, and are as follows: \\
+
+\noindent
+- \textbf{Title, Description, Tags:} String values set by the video creator for this video \\
+- \textbf{View Count, Likes, Dislikes, Comment Count, Ratings Disabled, Comments Disabled:} Popularity metrics recorded by YouTube for this video. \\
+- \textbf{Ratings Disabled, Comments Disabled:} set to True if like and dislike count/comment count, respectively, could not be found. \\
+- \textbf{Duration, Published At (date published), Dimension, Definition, Category Id:} Information describing the video. The Duration and date published are in ISO format. \\
+- \textbf{Channel View Count, Channel Subscriber Count, etc.:} Popularity metrics and other data about the video creator’s YouTube channel \\
+- \textbf{Time Retrieved:} A timestamp set when the video was retrieved. In ISO format like other dates. \\
+- \textbf{Is Trending:} Our target attribute. “True” for trending videos and “False” for non-trending. \\
+- \textbf{Video Id, Channel Id, Thumbnail Image:} Unique values with no use to our model. \\
+- \textbf{Update columns:} consist of updated popularity metrics, along with a timestamp for each update. There are eleven sets of update columns, each recording the current view count, like count, dislike count, and comment count at the time of the update. \\
+
+\noindent
+\quad The group initially started with a dataset of 200 trending videos from Kaggle. But, a dataset of only positive samples is unsuitable for binary classification, so we decided to also gather a dataset of non-trending videos. We understood that the result of a YouTube search is not an unbiased random sample, so we tried to compensate by gathering as many videos as possible by searching repeatedly within narrow time intervals. 21,000 non-trending videos remained after removing those with missing values and duplicates. This made for an imbalanced dataset, so we adjusted the balance of non-trending videos with downsampling. Update columns and later trending datasets were gathered mainly to support a prediction of a video’s future popularity, which did not end up being our primary goal.
+\par We decided to calculate the engagement rate by adding the number of likes and number of comments and then dividing that by the total number of subscribers. We removed columns such as the video id, thumbnails as those columns are unique for every video and do not contribute to training the model. To keep the metric of the duration of a video consistent, we converted the duration into seconds. We kept string columns such as description and title in the processed dataset, as they could be used for sentiment analysis and can assist in prediction. 
+
 \section*{Proposed solution and experimental results (4-5 pages)}
 \subsection*{Proposed Solution}
 
@@ -143,7 +152,12 @@ Li, Kent, and Zhang found that extreme gradient boosting with attributes \{time 
 \textbf{Figure 4:} WCSS versus K-values of clustering the downsampled data
 \end{center}
 \section*{Conclusion and discussion (0.5 pages)}
-\section*{Reference (unlimited pages)}
-
+\section*{References (unlimited pages)}
+\begin{enumerate}
+  \item Li, Yuping, et al. Stanford, 2019, \textit{YouTube Videos Prediction: Will This Video Be Popular?} 
+  \item Srinivasan, Aravind. “Youtube Views Predictor.” Medium, Towards Data Science, 17 Dec. 2017, \href{https://towardsdatascience.com/youtube-views-predictor-9ec573090acb}{https://towardsdatascience.com/youtube-views-predictor-9ec573090acb}
+  \item Dvir, Amit, et al. Arial University \& Lancaster University, 2019, \textit{Clustering the Unknown - The Youtube Case}
+  \item Barjasteh, Iman, and Ying Liu. Michigan State University, \textit{Trending Videos: Measurement and Analysis}
+\end{enumerate}
 
 \end{document}
